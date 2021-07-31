@@ -16,6 +16,7 @@ const searchBoxStyle = {
   position: "absolute",
   left: "50%",
   marginLeft: "-120px",
+  marginTop: "10px",
 };
 
 export default function AutocompleteSearchBox() {
