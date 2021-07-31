@@ -1,6 +1,7 @@
 import React from "react";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import AutocompleteSearchBox from "../autocomplete";
+import MapMarker from "../marker";
 
 const containerStyle = {
   width: "100%",
@@ -15,6 +16,7 @@ const center = {
 const defaultMapOptions = {
   fullscreenControl: false,
   mapTypeControl: false,
+  streetViewControl: false,
 };
 
 function Map() {
@@ -30,6 +32,7 @@ function Map() {
         options={defaultMapOptions}
       >
         <AutocompleteSearchBox />
+        <MapMarker />
       </GoogleMap>
     </LoadScript>
   );

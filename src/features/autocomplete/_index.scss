@@ -1,0 +1,20 @@
+.Autocomplete {
+  border-radius: 3px;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  font-size: toRem(14px);
+  height: toRem(32px);
+  outline: none;
+  padding: 0 toRem(12px);
+  position: relative;
+  text-overflow: ellipsis;
+  width: toRem(320px);
+
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: toRem(40px);
+    width: 100%;
+  }
+}
