@@ -1,26 +1,41 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment, selectCount } from "../marker";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import AutocompleteSearchBox from "../autocomplete";
+import MapMarker from "../marker";
 
-export function Map() {
-  const count = useSelector(selectCount);
-  const dispatch = useDispatch();
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
 
+const center = {
+  lat: 41.3851 /* Barcelona coords */,
+  lng: 2.1734,
+};
+
+const defaultMapOptions = {
+  fullscreenControl: false,
+  mapTypeControl: false,
+  streetViewControl: false,
+};
+
+function Map() {
   return (
-    <div>
-      <button
-        aria-label="Increment value"
-        onClick={() => dispatch(increment())}
+    <LoadScript
+      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+      libraries={["places"]}
+    >
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={12}
+        options={defaultMapOptions}
       >
-        +
-      </button>
-      <span>{count}</span>
-      <button
-        aria-label="Decrement value"
-        onClick={() => dispatch(decrement())}
-      >
-        -
-      </button>
-    </div>
+        <AutocompleteSearchBox />
+        <MapMarker />
+      </GoogleMap>
+    </LoadScript>
   );
 }
+
+export default React.memo(Map);

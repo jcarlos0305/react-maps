@@ -1,30 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
+// Autocomplete.js
+import React from "react";
+import { Marker } from "@react-google-maps/api";
+import { useSelector } from "react-redux";
+import { selectMarkers } from "../marker/markerSlice";
 
-export const markerSlice = createSlice({
-  name: "marker",
-  initialState: {
-    value: 0,
-  },
-  reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
-    },
-  },
-});
-
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = markerSlice.actions;
-
-export const selectCount = (state) => state.marker.value;
-
-export default markerSlice.reducer;
+export default function MapMarker() {
+  const markers = useSelector(selectMarkers);
+  console.log(markers);
+  return (
+    <>
+      {markers &&
+        markers.map((marker, index) => (
+          <Marker
+            key={index}
+            animation={2}
+            position={marker.position}
+            title={marker.name}
+          />
+        ))}
+    </>
+  );
+}
