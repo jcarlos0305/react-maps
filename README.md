@@ -1,18 +1,18 @@
-# Getting Started with Create React App
+# React maps
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was created with [Create React App](https://github.com/facebook/create-react-app) and using [
+Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/overview).
+
+## Instalation
+After cloning the repository we need to install all the dependencies.
+### In the command line run `npm install` or `yarn`
 
 ## Available Scripts
-
-In the project directory, you can run:
 
 ### `yarn start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
 ### `yarn test`
 
@@ -24,47 +24,30 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Theoretical test
+<!-- ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/public/diagram.png?raw=true) -->
+![Class diagram](public/diagram.png?raw=true)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The first improvement would be to add a boolean property to the service class to be able to tell if a service has been paid or not, this will prevent the getTotal function from charging every service that the user has requested every time that it is called.
 
-### `yarn eject`
+Before adding this change to the getTotal function, due to JavaScript being a  `prototype-based language`, the `typeof currentValue` is going to be `object`, to achieve this comparison we need to use `currentValue instanceof` to apply the right price.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Then all that it's left to do is validate if the service has been paid, in case it hasn't we add it to the total.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+getTotal = () => {
+    return this.services.reduce((accumulator, currentValue) => {
+      const multimediaContent = currentValue.getMultimediaContent();
+      if(!currentValue.paid) {
+        if(currentValue instanceof StreamingService) accumulator += multimediaContent.streamingPrice;
+        if(currentValue instanceof DownloadService) accumulator += multimediaContent.downloadPrice;
+        if(multimediaContent instanceof PremiumContent) accumulator += multimediaContent.additionalFee;
+      }
+      return accumulator;
+    }, 0);
+  }
+  ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  As a security improvement I would suggest to take the account login information of the user and move it to a class that handles the login, logout and registration processes.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  Also adding watchingProgress to the streaming service would allow the user to resume any stream where he left it. The deviceType in the downloadSerice would allow us to know which multimediaContent should be downloaded by the device of the user, to differentiate mobile from desktop.
