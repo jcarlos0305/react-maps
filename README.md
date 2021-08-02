@@ -25,29 +25,31 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 ## Theoretical test
-<!-- ![alt text](https://github.com/[username]/[reponame]/blob/[branch]/public/diagram.png?raw=true) -->
+
+The previous implementation wasn't optimal for business escalation, as new service types appear, the getTotal function wouldn't support them. My diagram refactor can be found below.
+
 ![Class diagram](public/diagram.png?raw=true)
 
-The first improvement would be to add a boolean property to the service class to be able to tell if a service has been paid or not, this will prevent the getTotal function from charging every service that the user has requested every time that it is called.
+As you can see, the abstraction of the price per service in the MultimediaContent class will allow new service types to be supported easily. The MultimediaContent will now have a price and a type to have the flexibility for new service types to be added to the software.
 
-Before adding this change to the getTotal function, due to JavaScript being a  `prototype-based language`, the `typeof currentValue` is going to be `object`, to achieve this comparison we need to use `currentValue instanceof` to apply the right price.
-
-Then all that it's left to do is validate if the service has been paid, in case it hasn't we add it to the total.
+The services and service types are requested by the user to the database and then used in the refactored getTotal function below.
 
 ```
 getTotal = () => {
-    return this.services.reduce((accumulator, currentValue) => {
-      const multimediaContent = currentValue.getMultimediaContent();
-      if(!currentValue.paid) {
-        if(currentValue instanceof StreamingService) accumulator += multimediaContent.streamingPrice;
-        if(currentValue instanceof DownloadService) accumulator += multimediaContent.downloadPrice;
-        if(multimediaContent instanceof PremiumContent) accumulator += multimediaContent.additionalFee;
-      }
-      return accumulator;
-    }, 0);
-  }
-  ```
+  const serviceTypes = ["DownloadService", "StreamingService", "VRService", ... ];
+  return this.services.reduce((accumulator, currentValue) => {
+    const multimediaContent = currentValue.getMultimediaContent();
+    serviceTypes.forEach(serv => {
+        if(multimediaContent.getType() == serv){
+            accumulator += multimediaContent.getPrice();
+            if(multimediaContent.isPremium()){
+                accumulator+= multimediaContent.getAdditionalFee();
+            }
+        }
+    });
+    return accumulator;
+  }, 0);
+}
+```
 
-  As a security improvement I would suggest to take the account login information of the user and move it to a class that handles the login, logout and registration processes.
-
-  Also adding watchingProgress to the streaming service would allow the user to resume any stream where he left it. The deviceType in the downloadSerice would allow us to know which multimediaContent should be downloaded by the device of the user, to differentiate mobile from desktop.
+As a security improvement, I would suggest taking the account login information out of the RegisteredUser class and move it to a class that handles the login and logout processes separately.
