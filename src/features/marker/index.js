@@ -6,7 +6,6 @@ import { selectMarkers } from "../marker/markerSlice";
 
 export default function MapMarker() {
   const markers = useSelector(selectMarkers);
-  console.log(markers);
   return (
     <>
       {markers &&
